@@ -1,6 +1,10 @@
 # Building and Securing a Modern Backend API
 
-## To start the repo, follow the fllowing commands
+## To start the with this, follow the fllowing steps
+
+## Create the login user by clicking
+
+https://manage.auth0.com
 
 ## movieanalyst-admin
 
