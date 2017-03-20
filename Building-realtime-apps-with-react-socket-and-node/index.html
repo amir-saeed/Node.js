@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Amir Saeed | Web Devloper | London </title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.2/react.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.2/JSXTransformer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
+</head>
+
+<body>
+
+    <div id="mount-point"></div>
+    <div id="label-mount-point"></div>
+    <script type="text/jsx">
+
+        var socket = io(); 
+        var Input = React.createClass({ _notifyServer: function(event) { socket.emit('client event', { value: event.target.value
+        }); }, render: function(){ return (
+        <div className="update-label">
+            <input type="text" placeholder="Enter text" onChange={this._notifyServer}/>
+        </div>
+        ); } }); var Label = React.createClass({ _onUpdateLabel: function(data) { this.setState(serverValue: data.value); }, getInitialState:
+        function(){ return { serverValue: '' }; }, render: function(){ return (
+        <div class="my-label">
+            <h2>{this.state.serverValue}</h2>
+        </div>
+        ) } }); var input = React.render(
+        <Input/>, document.getElementById('mount-point')); var label = React.render(
+        <Label/>, document.getElementById('label-mount-point')); socket.on('update label', function (data) { label._onUpdateLabel(data);
+        });
+    </script>
+
+    <script>
+        var socket = io();
+        socket.on('server event', function (data) {
+            console.log(data);
+            socket.emit('client event', { socket: 'io' });
+        });
+    </script>
+</body>
+
+</html>
