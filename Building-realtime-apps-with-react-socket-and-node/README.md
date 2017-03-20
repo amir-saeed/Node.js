@@ -2,5 +2,5 @@
 
 ## To start the with this, follow the fllowing steps
 
-run : npm install 
-run : node app
+###### run : npm install 
+###### run : node app
