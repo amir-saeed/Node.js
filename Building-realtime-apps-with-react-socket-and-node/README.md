@@ -5,7 +5,12 @@
 Go into the this above directory, and through command window / terminal, 
 
 ###### run : npm install 
+
+With package.json, npm install all the dependencies required
+
 ###### run : node server
+
+Now npm will start server at port 8080.
 
 Now open two windows on http://localhost:8080/
 
