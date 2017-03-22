@@ -1,6 +1,8 @@
 # Building real time applications with react and socket.io using nodejs
 
-## To start the with this, follow the fllowing steps
+## To start the with this, follow the below steps
+
+Go into the this above directory, and through command window / terminal, 
 
 ###### run : npm install 
 ###### run : node server
