@@ -1,0 +1,273 @@
+{
+	"info": {
+		"_postman_id": "ba5875c5-0715-434c-a003-3660cb9b6f8d",
+		"name": "Mongodb",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15861237"
+	},
+	"item": [
+		{
+			"name": "create Property",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Get the string value",
+							"const agentIdString = pm.environment.get(\"AGENT_ID\");",
+							"// Set it as a variable without quotes",
+							"pm.variables.set(\"AGENT_ID_RAW\", agentIdString);",
+							"",
+							"// Log the current value to confirm it's set",
+							"// console.log(\"Current AGENT_ID???: \" + pm.environment.get(\"AGENT_ID\"));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Modern 2 Bedroom Apartment\",\n  \"description\": \"Spacious 2-bedroom apartment with stunning views and modern amenities.\",\n  \"propertyType\": \"apartment\",\n  \"listingType\": \"rent\",\n  \"price\": 2500,\n  \"priceUnit\": \"USD\",\n  \"area\": 1200,\n  \"areaUnit\": \"sqft\",\n  \"bedrooms\": 2,\n  \"bathrooms\": 2,\n  \"features\": [\n    {\n      \"name\": \"Flooring\",\n      \"value\": \"Hardwood\"\n    },\n    {\n      \"name\": \"Parking\",\n      \"value\": 2\n    },\n    {\n      \"name\": \"Year Built\",\n      \"value\": 2018\n    }\n  ],\n  \"amenities\": [\"pool\", \"gym\", \"elevator\", \"security\"],\n  \"images\": [\n    {\n      \"url\": \"https://example.com/image1.jpg\",\n      \"caption\": \"Living Room\",\n      \"isPrimary\": true\n    },\n    {\n      \"url\": \"https://example.com/image2.jpg\",\n      \"caption\": \"Kitchen\"\n    }\n  ],\n  \"address\": {\n    \"street\": \"123 Main Street\",\n    \"city\": \"San Francisco\",\n    \"state\": \"CA\",\n    \"zipCode\": \"94105\",\n    \"country\": \"USA\"\n  },\n  \"agent\": \"{{AGENT_ID}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/properties",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"properties"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"if (jsonData.success) {",
+							"    pm.environment.set(\"AGENT_ID\", jsonData.data._id);",
+							"    console.log(\"Saved agent ID: \" + jsonData.data._id);",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe6@example.com\",\n  \"password\": \"securepassword123\",\n  \"role\": \"agent\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get properties by proximity",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/api/properties/search/proximity?longitude=-122.4194&latitude=37.7749&maxDistance=5000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"properties",
+						"search",
+						"proximity"
+					],
+					"query": [
+						{
+							"key": "longitude",
+							"value": "-122.4194"
+						},
+						{
+							"key": "latitude",
+							"value": "37.7749"
+						},
+						{
+							"key": "maxDistance",
+							"value": "5000"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all properties",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/api/properties",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"properties"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get property by id",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/api/properties/67f5400f9da20330faf42218",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"properties",
+						"67f5400f9da20330faf42218"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update property by id",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"price\": 2501,\n    \"area\": 1400\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/properties/67f5400f9da20330faf42218",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"properties",
+						"67f5400f9da20330faf42218"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete property",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/api/properties/67f5400f9da20330faf42218",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"properties",
+						"67f5400f9da20330faf42218"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
