@@ -1,0 +1,7 @@
+docker run --name auth-database -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=auth_db -p 5432:5432 -d postgres:latest
+
+postgresql://postgres:postgres@localhost:5432/auth_db
+
+sudo lsof -i TCP:5432
+
+sudo kill 576        
