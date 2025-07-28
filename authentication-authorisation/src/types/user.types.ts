@@ -28,3 +28,8 @@ export interface UpdateUserDto {
     password?: string;
     age?: number;
 }
+
+export interface TokenResult {
+    user: User | null;
+    error: string | null;
+}

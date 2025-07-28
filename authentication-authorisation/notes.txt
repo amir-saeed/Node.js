@@ -5,3 +5,131 @@ postgresql://postgres:postgres@localhost:5432/auth_db
 sudo lsof -i TCP:5432
 
 sudo kill 576        
+
+
+// Axios interceptor - handles token refresh automatically
+axios.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response?.status === 401) {
+      // Access token expired, refresh it
+      const refreshToken = localStorage.getItem('refreshToken');
+      
+      const refreshResponse = await fetch('/api/auth/refresh', {
+        method: 'POST',
+        body: JSON.stringify({ refreshToken }),
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      const { accessToken: newAccessToken } = await refreshResponse.json();
+      localStorage.setItem('accessToken', newAccessToken);
+      
+      // Retry original request with new token
+      error.config.headers.Authorization = `Bearer ${newAccessToken}`;
+      return axios.request(error.config);
+    }
+    return Promise.reject(error);
+  }
+);
+
+// Logout - Send BOTH tokens
+// In React - clear tokens immediately on logout
+const logout = async () => {
+  // 1. Call logout API
+  await fetch('/api/auth/logout', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ refreshToken })
+  });
+  
+  // 2. Clear tokens immediately
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+  
+  // 3. Redirect to login
+  window.location.href = '/login';
+};
+
+
+// Custom React hook for API error handling
+import { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+
+export const useApiErrorHandler = () => {
+    const navigate = useNavigate();
+
+    const handleError = useCallback((error) => {
+        const { response } = error;
+        const { code, message, errors } = response?.data || {};
+
+        switch (code) {
+            case 'TOKEN_EXPIRED':
+                toast.loading('Refreshing session...');
+                // Auto-refresh handled by interceptor
+                break;
+
+            case 'SESSION_REVOKED':
+                toast.error('Session ended. Please log in again.');
+                localStorage.clear();
+                navigate('/login');
+                break;
+
+            case 'VALIDATION_ERROR':
+                if (errors && Array.isArray(errors)) {
+                    errors.forEach(err => {
+                        toast.error(`${err.field}: ${err.message}`);
+                    });
+                } else {
+                    toast.error(message || 'Please check your input');
+                }
+                break;
+
+            case 'EMAIL_ALREADY_EXISTS':
+                toast.error('Account exists. Try logging in instead.', {
+                    action: {
+                        label: 'Login',
+                        onClick: () => navigate('/login')
+                    }
+                });
+                break;
+
+            case 'INVALID_CREDENTIALS':
+                toast.error('Invalid email or password');
+                break;
+
+            case 'TOO_MANY_REQUESTS':
+                toast.error('Too many attempts. Please wait before trying again.');
+                break;
+
+            default:
+                toast.error(message || 'Something went wrong. Please try again.');
+        }
+
+        return { code, message, handled: true };
+    }, [navigate]);
+
+    return { handleError };
+};
+
+// Usage in components
+const LoginComponent = () => {
+    const { handleError } = useApiErrorHandler();
+
+    const handleLogin = async (data) => {
+        try {
+            const response = await api.post('/auth/login', data);
+            toast.success('Welcome back!');
+            // Handle success
+        } catch (error) {
+            handleError(error);
+        }
+    };
+
+    return (
+        // Your login form JSX
+    );
+};
